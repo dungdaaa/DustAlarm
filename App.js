@@ -28,7 +28,7 @@ export default function App() {
   }, []);
 
   ///////////////////////////time
-  //Date
+  //date
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function App() {
     return () => clearInterval(dateInterval);
   }, []);
 
-  //Time
+  //time
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
