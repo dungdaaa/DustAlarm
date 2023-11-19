@@ -141,24 +141,24 @@ const styles = StyleSheet.create({
   },
 
   mid: {
-    flex: 5,
+    flex: 5.5,
     backgroundColor: "#fafafa",
   },
   image: {
-    flex: 8.5,
+    flex: 8,
     backgroundColor: "green",
     justifyContent: "center",
     alignItems: "center",
   },
   description: {
-    flex: 1.5,
+    flex: 2,
     backgroundColor: "yellow",
     justifyContent: "center",
     alignItems: "center",
   },
 
   bot: {
-    flex: 2.5,
+    flex: 2,
     backgroundColor: "#fafafa",
   },
   SV: {
