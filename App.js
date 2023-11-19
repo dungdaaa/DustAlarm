@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ScrollView, Dimensions, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Dimensions, StyleSheet, Text, View, Image } from 'react-native';
 import * as Location from 'expo-location';
 
 const { width: SCREEN_WIDTH} = Dimensions.get("window");
@@ -74,6 +74,38 @@ export default function App() {
   }, []);
   ///////////////////////////time
 
+  const getAirQualityStatus = () => {
+    const pm10 = currentAir.pm10;
+
+    if(pm10 <= 20){
+      return "매우좋음";
+    } else if(pm10 <= 50){
+      return "좋음";
+    } else if(pm10 <= 100){
+      return "보통";
+    } else if(pm10 <= 200){
+      return "나쁨";
+    } else {
+      return "매우나쁨";
+    }
+  };
+
+  //미세먼지 농도에 따른 이미지 경로 지정
+  const getDustImage = () => {
+    const pm10 = currentAir.pm10;
+    if(pm10 <= 20){
+      return require('./assets/mise_verynice.png');
+    } else if(pm10 <= 50){
+      return require('./assets/mise_nice.png');
+    } else if(pm10 <= 100){
+      return require('./assets/mise_mid.png');
+    } else if(pm10 <= 200){
+      return require('./assets/mise_bad.png')
+    } else {
+      return require('./assets/mise_verybad.png');
+    }
+  };
+
   return (
     <View style = {styles.container}>
       <StatusBar style='dark'/>
@@ -89,10 +121,13 @@ export default function App() {
 
       <View style = {styles.mid}>
         <View style = {styles.image}>
-          <Text>Image</Text>
+        <Image
+            source={getDustImage()}
+            style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+          />
         </View>
         <View style = {styles.description}>
-          <Text>Image's Description</Text>
+          <Text>{getAirQualityStatus()}</Text>
         </View>
       </View>
 
