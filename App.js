@@ -5,12 +5,15 @@ import { ScrollView, Dimensions, StyleSheet, Text, View } from 'react-native';
 import * as Location from 'expo-location';
 
 const { width: SCREEN_WIDTH} = Dimensions.get("window");
+const API_KEY = "b5a053a5069f13a3751d1adb80e453e0";
 
 export default function App() {
   const [city, setCity] = useState("Loading...") //기본값
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState(); //delete..?
+  const [currentAir, setCurrentAir] = useState([]);
   const [ok, setOk] = useState(true);
-  const ask = async() => {
+  ///////////////////////////location & AirPollution
+  const getWeather = async() => {
     const {granted} = await Location.requestForegroundPermissionsAsync();
     
     if(!granted){ //유저의 권한 요청 거절 -> sad face
@@ -21,10 +24,17 @@ export default function App() {
 
     const location = await Location.reverseGeocodeAsync({latitude, longitude}, {useGoogleMaps: false});
     setCity(location[0].city);
-  }
 
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+    const json = await response.json();
+    //일산화탄소 log  값: 327.11
+    console.log(json.list[0].components.co);
+  };
+  ///////////////////////////location
+
+  
   useEffect(() => {
-    ask();
+    getWeather();
   }, []);
 
   ///////////////////////////time
