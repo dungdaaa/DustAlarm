@@ -9,10 +9,17 @@ const API_KEY = "b5a053a5069f13a3751d1adb80e453e0";
 
 export default function App() {
   const [city, setCity] = useState("Loading...") //기본값
-  const [location, setLocation] = useState(); //delete..?
-  const [currentAir, setCurrentAir] = useState([]);
+  //const [location, setLocation] = useState(); //delete..?
+  const [currentAir, setCurrentAir] = useState({
+    pm10: 0,
+    pm25: 0,
+    no2: 0,
+    o3: 0,
+    co: 0,
+    so2: 0,
+  });
   const [ok, setOk] = useState(true);
-  ///////////////////////////location & AirPollution
+  ///////////////////////////location & airPollution
   const getWeather = async() => {
     const {granted} = await Location.requestForegroundPermissionsAsync();
     
@@ -27,11 +34,17 @@ export default function App() {
 
     const response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
     const json = await response.json();
-    //일산화탄소 log  값: 327.11
-    console.log(json.list[0].components.co);
+    //co nh3 no no2 o3 pm10 pm2_5 so2
+    setCurrentAir({
+      pm10: json.list[0].components.pm10,
+      pm25: json.list[0].components.pm2_5,
+      no2: json.list[0].components.no2,
+      o3: json.list[0].components.o3,
+      co: json.list[0].components.co,
+      so2: json.list[0].components.so2,
+    });
   };
-  ///////////////////////////location
-
+  ///////////////////////////location & airPollution
   
   useEffect(() => {
     getWeather();
@@ -92,27 +105,27 @@ export default function App() {
           >
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>미세먼지</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.pm10}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>초미세먼지</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.pm25}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>이산화질소</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.no2}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>오존</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.o3}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>일산화탄소</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.co}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>아황산가스</Text>
-              <Text style = {styles.detailValue}>value</Text>
+              <Text style = {styles.detailValue}>{currentAir.so2}</Text>
             </View>
           </ScrollView>
       </View>
