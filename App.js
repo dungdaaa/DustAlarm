@@ -19,7 +19,8 @@ export default function App() {
     so2: 0,
   });
   const [ok, setOk] = useState(true);
-  ///////////////////////////location & airPollution
+
+  //location & airPollution
   const getWeather = async() => {
     const {granted} = await Location.requestForegroundPermissionsAsync();
     
@@ -34,6 +35,7 @@ export default function App() {
 
     const response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
     const json = await response.json();
+
     //co nh3 no no2 o3 pm10 pm2_5 so2
     setCurrentAir({
       pm10: json.list[0].components.pm10,
@@ -44,7 +46,6 @@ export default function App() {
       so2: json.list[0].components.so2,
     });
   };
-  ///////////////////////////location & airPollution
   
   useEffect(() => {
     getWeather();
@@ -72,11 +73,12 @@ export default function App() {
     return () => clearInterval(timeInterval);
   }, []);
 
+  //Image Description
   const getAirQualityStatus = () => {
     const pm10 = currentAir.pm10;
 
     if(pm10 <= 20){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(pm10 <= 50){
       return "좋음";
     } else if(pm10 <= 100){
@@ -84,7 +86,7 @@ export default function App() {
     } else if(pm10 <= 200){
       return "나쁨";
     } else {
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   };
 
@@ -93,19 +95,19 @@ export default function App() {
     const pm10 = currentAir.pm10;
 
     if(pm10 <= 20){
-      return "설명";
+      return "신선한 공기 잔뜩 마시세요";
     } else if(pm10 <= 50){
-      return "설명";
+      return "외출해도 좋아요";
     } else if(pm10 <= 100){
-      return "설명";
+      return "무난한 날이에요";
     } else if(pm10 <= 200){
-      return "설명";
+      return "외출을 자제해 주세요";
     } else {
-      return "설명";
+      return "마스크를 꼭 착용합시다";
     }
   };
 
-  //미세먼지 농도에 따른 이미지 경로 지정
+  //Image
   const getDustImage = () => {
     const pm10 = currentAir.pm10;
     if(pm10 <= 20){
@@ -126,7 +128,7 @@ export default function App() {
     const pm10 = currentAir.pm10;
 
     if(pm10 <= 20){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(pm10 <= 50){
       return "좋음";
     } else if(pm10 <= 100){
@@ -134,7 +136,7 @@ export default function App() {
     } else if(pm10 <= 200){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   };
 
@@ -143,7 +145,7 @@ export default function App() {
     const pm25 = currentAir.pm25;
 
     if(pm25 <= 10){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(pm25 <= 25){
       return "좋음";
     } else if(pm25 <= 50){
@@ -151,7 +153,7 @@ export default function App() {
     } else if(pm25 <= 75){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   };
 
@@ -160,7 +162,7 @@ export default function App() {
     const no2 = currentAir.no2;
 
     if(no2 <= 40){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(no2 <= 70){
       return "좋음";
     } else if(no2 <= 150){
@@ -168,7 +170,7 @@ export default function App() {
     } else if(no2 <= 200){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   };
 
@@ -177,7 +179,7 @@ export default function App() {
     const o3 = currentAir.o3;
 
     if(o3 <= 60){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(o3 <= 100){
       return "좋음";
     } else if(o3 <= 140){
@@ -185,7 +187,7 @@ export default function App() {
     } else if(o3 <= 180){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   };
 
@@ -194,7 +196,7 @@ export default function App() {
     const co = currentAir.co;
 
     if(co <= 4400){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(co <= 9400){
       return "좋음";
     } else if(co <= 12400){
@@ -202,7 +204,7 @@ export default function App() {
     } else if(co <= 15400){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   }
 
@@ -211,7 +213,7 @@ export default function App() {
     const so2 = currentAir.so2;
 
     if(so2 <= 20){
-      return "매우좋음";
+      return "매우 좋음";
     } else if(so2 <= 80){
       return "좋음";
     } else if(so2 <= 250){
@@ -219,7 +221,7 @@ export default function App() {
     } else if(so2 <= 350){
       return "나쁨";
     } else{
-      return "매우나쁨";
+      return "매우 나쁨";
     }
   }
 
@@ -244,7 +246,8 @@ export default function App() {
           />
         </View>
         <View style = {styles.description}>
-          <Text>{getAirQualityStatus()}</Text>
+          <Text style = {styles.imageDescription}>{getAirQualityStatus()}</Text>
+          <Text style = {styles.imageDescriptionDetail}>{getAirQualityStatusDescription()}</Text>
         </View>
       </View>
 
@@ -257,32 +260,32 @@ export default function App() {
           >
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>미세먼지</Text>
-              <Text>{getPm10_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getPm10_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.pm10}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>초미세먼지</Text>
-              <Text>{getPm25_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getPm25_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.pm25}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>이산화질소</Text>
-              <Text>{getNo2_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getNo2_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.no2}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>오존</Text>
-              <Text>{getO3_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getO3_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.o3}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>일산화탄소</Text>
-              <Text>{getCo_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getCo_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.co}</Text>
             </View>
             <View style = {styles.detail}>
               <Text style = {styles.detailTitle}>아황산가스</Text>
-              <Text>{getSo2_SV()}</Text>
+              <Text style = {styles.detailDescription}>{getSo2_SV()}</Text>
               <Text style = {styles.detailValue}>{currentAir.so2}</Text>
             </View>
           </ScrollView>
@@ -297,8 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fafafa",
   },
   top: {
-    flex: 2.5,
-    //backgroundColor: "#fafafa",
+    flex: 2.3,
   },
   city: {
     flex: 8,
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
   cityName: {
     fontSize: 50,
     fontWeight: "500",
-    marginTop: 100, //move down
+    marginTop: 92, //move down
   },
   date: {
     flex: 2,
@@ -318,33 +320,42 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dateName: {
-    marginBottom: 20,
+    fontSize: 19,
   },
 
   mid: {
-    flex: 5.5,
-    //backgroundColor: "#fafafa",
+    flex: 5.2,
   },
   image: {
     flex: 8,
     //backgroundColor: "green",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: -20,
   },
   description: {
     flex: 2,
     //backgroundColor: "yellow",
     justifyContent: "center",
     alignItems: "center",
-    //크기 조절
+    
+  },
+  imageDescription: {
+    fontSize: 46,
+    marginBottom: 3,
+  },
+  imageDescriptionDetail:{
+    fontSize: 17,
   },
 
   bot: {
-    flex: 2,
-    //backgroundColor: "#fafafa",
+    flex: 2.5,
   },
   SV: {
-
+    borderTopLeftRadius: 70,
+    borderTopRightRadius: 70,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    marginTop: 25,
   },
   detail: {
     //backgroundColor: "blue",
@@ -353,9 +364,12 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH / 3,
   },
   detailTitle: {
-    fontSize: 25,
+    fontSize: 23,
+  },
+  detailDescription:{
+    fontSize: 18,
   },
   detailValue: {
-    fontSize: 20,
+    fontSize: 15,
   },
 })
