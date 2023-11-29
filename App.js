@@ -1,11 +1,42 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ScrollView, Dimensions, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Modal, Button } from 'react-native';
 import * as Location from 'expo-location';
+import {WebView} from 'react-native-webview';
+import axios from 'axios';
 
 const { width: SCREEN_WIDTH} = Dimensions.get("window");
 const API_KEY = "b5a053a5069f13a3751d1adb80e453e0";
+const KAKAO_MAPS_API_KEY = "7786ee326a539871a7b8759052c01034";
+
+const getNearbyConvenienceStores = async (latitude, longitude) => {
+  try {
+    const response = await axios.get(
+      `https://dapi.kakao.com/v2/local/search/category.json?category_group_code=CS2&x=${longitude}&y=${latitude}&radius=1000`,
+      {
+        headers: {
+          Authorization: `KakaoAK ${KAKAO_MAPS_API_KEY}`, // Replace YOUR_KAKAO_API_KEY with your actual Kakao API key
+        },
+      }
+    );
+
+    if (response.data.documents.length >= 2) {
+      const store1 = response.data.documents[0].place_name;
+      const store2 = response.data.documents[1].place_name;
+
+      // Display the stores or do something with the data
+      console.log('Nearest Convenience Stores:', store1, store2);
+      return [store1, store2];
+    } else {
+      console.log('No nearby convenience stores found.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching nearby convenience stores:', error);
+    return [];
+  }
+};
 
 export default function App() {
   const [city, setCity] = useState("Loading...") //기본값
@@ -19,6 +50,8 @@ export default function App() {
     so2: 0,
   });
   const [ok, setOk] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [nearbyStores, setNearbyStores] = useState([]);
 
   //location & airPollution
   const getWeather = async() => {
@@ -45,6 +78,12 @@ export default function App() {
       co: json.list[0].components.co,
       so2: json.list[0].components.so2,
     });
+    try {
+      const stores = await getNearbyConvenienceStores(latitude, longitude);
+      setNearbyStores(stores);
+    } catch (error) {
+      console.error('가까운 편의점 정보를 가져오는 중 오류 발생:', error);
+    }
   };
   
   useEffect(() => {
@@ -290,9 +329,36 @@ export default function App() {
             </View>
           </ScrollView>
       </View>
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => setModalVisible(true)}
+      >
+        <Image
+          source={require('./assets/mask_icon.png')}
+          style={{ width: 50, height: 50, resizeMode: 'cover' }}
+        />
+      </TouchableOpacity>
+
+      {/* Modal for displaying nearby convenience stores */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>주변 편의점에서 마스크를 구매하세요!</Text>
+            {nearbyStores.map((store, index) => (
+              <Text key={index} style={styles.modalStore}>{index + 1}. {store}</Text>
+            ))}
+            <Button title="Close" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -372,4 +438,31 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 15,
   },
-})
+  icon: {
+    position: 'absolute',
+    top: 55,
+    right: 10,
+    zIndex: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: SCREEN_WIDTH - 40,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalStore: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+});
